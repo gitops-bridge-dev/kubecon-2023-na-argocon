@@ -31,7 +31,6 @@ variable "addons" {
     enable_cert_manager                 = true
     enable_aws_ebs_csi_resources        = true # generate gp2 and gp3 storage classes for ebs-csi
     enable_aws_cloudwatch_metrics       = true
-    enable_external_dns                 = true
     enable_external_secrets             = true
     enable_aws_load_balancer_controller = true
     enable_aws_for_fluentbit            = true

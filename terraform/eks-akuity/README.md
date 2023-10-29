@@ -136,9 +136,7 @@ watch kubectl get applications -n argocd
 ### Verify the Addons
 Verify that the addons are ready:
 ```shell
-kubectl get deployment -n kube-system \
-  aws-load-balancer-controller \
-  metrics-server
+kubectl get deployment- A
 ```
 
 ## Access ArgoCD
