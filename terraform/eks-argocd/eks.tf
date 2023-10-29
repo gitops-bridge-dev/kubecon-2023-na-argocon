@@ -41,7 +41,6 @@ module "eks" {
         }
       })
     }
-    # Remove for demo as ebs-csi is long to provision (15mn)
     aws-ebs-csi-driver = {
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     }
