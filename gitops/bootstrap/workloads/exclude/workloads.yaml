@@ -15,13 +15,16 @@ spec:
               values: [in-cluster]
   template:
     metadata:
-      name: 'workload'
+      name: workload
     spec:
       project: default
       source:
         repoURL: '{{metadata.annotations.workload_repo_url}}'
-        path: '{{metadata.annotations.workload_repo_basepath}}{{metadata.annotations.workload_repo_path}}'
+        path: '{{metadata.annotations.workload_repo_basepath}}bootstrap/workloads'
         targetRevision: '{{metadata.annotations.workload_repo_revision}}'
+        directory:
+          recurse: true
+          exclude: exclude/*
       destination:
         namespace: 'workload'
         name: '{{name}}'

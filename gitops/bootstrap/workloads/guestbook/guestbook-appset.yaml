@@ -16,6 +16,8 @@ spec:
   template:
     metadata:
       name: guestbook
+      labels:
+        workload: 'true'
     spec:
       project: default
       source:

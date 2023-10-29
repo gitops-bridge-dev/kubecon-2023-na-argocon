@@ -124,7 +124,7 @@ The output looks like the following:
 ## Deploy the Addons
 Bootstrap the addons using ArgoCD:
 ```shell
-kubectl apply -f bootstrap/addons.yaml
+kubectl apply -f ../../gitops/bootstrap/control-plane/exclude/addons.yaml
 ```
 
 ### Monitor GitOps Progress for Addons
@@ -149,13 +149,13 @@ terraform output -raw access_argocd
 ## Deploy the Workloads
 Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
 ```shell
-kubectl apply -f bootstrap/workloads.yaml
+kubectl apply -f ../../gitops/bootstrap/workloads/exclude/workloads.yaml
 ```
 
 ### Monitor GitOps Progress for Workloads
 Watch until the Workloads ArgoCD Application is `Healthy`
 ```shell
-watch kubectl get -n argocd applications guestbook
+watch kubectl get -n argocd applications workload,guestbook
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
