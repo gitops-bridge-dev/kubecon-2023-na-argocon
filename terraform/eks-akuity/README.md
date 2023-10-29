@@ -168,13 +168,13 @@ kubectl get -n guestbook deployments,service,ep,ingress
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
 ```shell
-curl -I $(kubectl get -n guestbook ingress guestbook-ui -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+curl -I $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 
 Retrieve the ingress URL for the application, and access in the browser:
 ```shell
-echo "Application URL: http://$(kubectl get -n guestbook ingress guestbook -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "Application URL: http://$(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
 
