@@ -155,7 +155,7 @@ kubectl apply -f ../../gitops/bootstrap/workloads/exclude/workloads.yaml
 ### Monitor GitOps Progress for Workloads
 Watch until the Workloads ArgoCD Application is `Healthy`
 ```shell
-watch kubectl get -n argocd applications workload,guestbook
+watch kubectl get -n argocd applications -l workload=true
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
@@ -168,7 +168,7 @@ kubectl get -n guestbook deployments,service,ep,ingress
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
 ```shell
-curl -I $(kubectl get -n guestbook ingress guestbook -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+curl -I $(kubectl get -n guestbook ingress guestbook-ui -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 

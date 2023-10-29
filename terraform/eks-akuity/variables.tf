@@ -35,9 +35,9 @@ variable "addons" {
     enable_aws_load_balancer_controller = true
     enable_aws_for_fluentbit            = true
     enable_karpenter                    = true
+    enable_aws_ingress_nginx            = true # inginx configured with AWS NLB
     # oss
     enable_metrics_server = true
-    enable_ingress_nginx  = true
     enable_kyverno        = true
   }
 }
