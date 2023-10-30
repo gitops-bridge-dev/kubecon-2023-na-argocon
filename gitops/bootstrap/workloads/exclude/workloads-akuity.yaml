@@ -9,24 +9,22 @@ spec:
   generators:
     - clusters:
         selector:
-          matchExpressions:
-            - key: akuity.io/argo-cd-cluster-name
-              operator: NotIn
-              values: [in-cluster]
+          matchLabels:
+            akuity.io/argo-cd-cluster-name: in-cluster
   template:
     metadata:
       name: workload
     spec:
       project: default
       source:
-        repoURL: '{{metadata.annotations.workload_repo_url}}'
-        path: '{{metadata.annotations.workload_repo_basepath}}bootstrap/workloads'
-        targetRevision: '{{metadata.annotations.workload_repo_revision}}'
+        repoURL: 'git@github.com:csantanapr/kubecon-2023-na-argocon'
+        path: 'gitops/bootstrap/workloads'
+        targetRevision: 'main'
         directory:
           recurse: true
           exclude: exclude/*
       destination:
-        namespace: argocd
+        namespace: 'argocd'
         name: '{{name}}'
       syncPolicy:
         automated: {}
