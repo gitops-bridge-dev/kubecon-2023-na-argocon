@@ -60,11 +60,11 @@ The output looks like the following:
   "addons_repo_basepath": "gitops/",
   "addons_repo_path": "bootstrap/control-plane/addons",
   "addons_repo_revision": "main",
-  "addons_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon",
+  "addons_repo_url": "git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon",
   "workload_repo_basepath": "gitops/",
   "workload_repo_path": "apps",
   "workload_repo_revision": "main",
-  "workload_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon"
+  "workload_repo_url": "git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon"
   "aws_account_id": "0123456789",
   "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::0123456789:role/aws-cloudwatch-metrics-20231029150636632700000028",
   "aws_cloudwatch_metrics_namespace": "amazon-cloudwatch",

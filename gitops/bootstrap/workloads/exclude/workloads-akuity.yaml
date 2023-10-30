@@ -17,7 +17,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'git@github.com:csantanapr/kubecon-2023-na-argocon'
+        repoURL: 'git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon'
         path: 'gitops/bootstrap/workloads'
         targetRevision: 'main'
         directory:

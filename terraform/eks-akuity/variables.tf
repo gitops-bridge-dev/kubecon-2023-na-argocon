@@ -60,7 +60,7 @@ variable "addons" {
 variable "gitops_addons_org" {
   description = "Git repository org/user contains for addons"
   type        = string
-  default     = "git@github.com:csantanapr"
+  default     = "git@github.com:gitops-bridge-dev"
 }
 variable "gitops_addons_repo" {
   description = "Git repository contains for addons"
@@ -86,7 +86,7 @@ variable "gitops_addons_path" {
 variable "gitops_workload_org" {
   description = "Git repository org/user contains for workload"
   type        = string
-  default     = "git@github.com:csantanapr"
+  default     = "git@github.com:gitops-bridge-dev"
 }
 variable "gitops_workload_repo" {
   description = "Git repository contains for workload"
