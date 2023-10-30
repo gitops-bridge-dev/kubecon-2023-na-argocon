@@ -119,15 +119,15 @@ The output looks like the following:
   "kubernetes_version": "1.28"
 }
 ```
+
+### Login with ArgoCD CLI
+
+```shell
 export AKUITY_INSTANCE=$(akuity --org-name $TF_VAR_akp_org_name argocd instance list -o json | jq -r '.[0].name')
 export ARGOCD_SERVER=$(akuity --org-name $TF_VAR_akp_org_name argocd instance list -o json | jq -r '.[0].hostname')
 export ARGOCD_OPTS="--grpc-web"
 argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
-
-akuity --org-name $TF_VAR_akp_org_name argocd instance list
-akuity --org-name $TF_VAR_akp_org_name argocd cluster list
-akuity argocd cluster get --org-name $TF_VAR_akp_org_name
-
+```
 
 
 ## Deploy the Addons
@@ -223,7 +223,7 @@ kubectl top pods -n guestbook
 ```
 
 Output should look like the following:
-```
+```text
 NAMESPACE           NAME                                                CPU(cores)   MEMORY(bytes)
 akuity              akuity-agent-764cc87d89-2gmd6                       1m           10Mi
 akuity              akuity-agent-764cc87d89-jjlvt                       1m           10Mi
