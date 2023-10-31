@@ -92,6 +92,9 @@ locals {
       workload_repo_basepath = local.gitops_workload_basepath
       workload_repo_path     = local.gitops_workload_path
       workload_repo_revision = local.gitops_workload_revision
+    },
+    {
+      aws_ingress_nginx_security_groups = aws_security_group.ingress_nginx_external.id
     }
   )
 
