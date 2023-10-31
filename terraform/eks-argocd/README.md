@@ -178,7 +178,8 @@ ingress/guestbook-ui   nginx   *       <>.elb.us-west-2.amazonaws.com   80      
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
 ```shell
-curl -I $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+kubectl exec -n guestbook deploy/guestbook-ui -- \
+curl -I -s $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 
