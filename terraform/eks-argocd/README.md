@@ -163,17 +163,17 @@ kubectl get -n guestbook deployments,service,ep,ingress
 ```
 The expected output should look like the following:
 ```text
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/game-2048   1/1     1            1           7h59m
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           3m7s
 
-NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
-service/game-2048   ClusterIP   172.20.155.47   <none>        80/TCP    7h59m
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   172.20.211.185   <none>        80/TCP    3m7s
 
-NAME                  ENDPOINTS       AGE
-endpoints/game-2048   10.0.13.64:80   7h59m
+NAME                     ENDPOINTS        AGE
+endpoints/guestbook-ui   10.0.31.115:80   3m7s
 
-NAME                CLASS   HOSTS   ADDRESS                              PORTS   AGE
-ingress/game-2048   alb     *       k8s-<>.us-west-2.elb.amazonaws.com   80      7h59m
+NAME                   CLASS   HOSTS   ADDRESS                          PORTS   AGE
+ingress/guestbook-ui   nginx   *       <>.elb.us-west-2.amazonaws.com   80      3m7s
 ```
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
