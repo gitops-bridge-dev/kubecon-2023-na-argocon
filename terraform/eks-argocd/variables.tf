@@ -93,3 +93,15 @@ variable "gitops_workload_path" {
   type        = string
   default     = "apps"
 }
+
+variable "enable_gitops_auto_addons" {
+  description = "Automatically deploy addons"
+  type        = bool
+  default     = false
+}
+
+variable "enable_gitops_auto_workloads" {
+  description = "Automatically deploy addons"
+  type        = bool
+  default     = false
+}
