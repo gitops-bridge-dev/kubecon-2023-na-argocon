@@ -31,3 +31,7 @@ output "access_argocd" {
     echo "ArgoCD URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
     EOT
 }
+
+output "akuity_server_addr" {
+  value = module.akuity.akuity_server_addr
+}

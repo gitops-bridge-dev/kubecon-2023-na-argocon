@@ -6,6 +6,7 @@ Before you begin, make sure you have the following command line tools installed:
 - terraform
 - kubectl
 - argocd
+- akuity
 
 Get a free account on akuity.com, and create an API Key with org access
 ```shell
@@ -15,21 +16,17 @@ export AKUITY_SERVER_URL=https://akuity.cloud
 export TF_VAR_akp_org_name="your org name"
 ```
 
+```shell
+akuity login
+```
+
 Set the password you wan to access argocd
 ```shell
 export TF_VAR_argocd_admin_password=xxxxxxxxxxx
 ```
 
-
-## Fork the Git Repositories
-
-### Fork the Addon GitOps Repo
-1. Fork the git repository for addons [here](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
-2. Update the following environment variables to point to your fork by changing the default values:
-```shell
-export TF_VAR_gitops_addons_org=https://github.com/<org or user>
-export TF_VAR_gitops_workload_org=https://github.com/<org or user>
-```
+## (Optional) Fork the GitOps git repositories
+See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) for more info on the terraform variables to override.
 
 ## Deploy the Kubernetes Cluster
 Initialize Terraform and deploy the EKS cluster:
@@ -44,74 +41,78 @@ Retrieve `kubectl` config, then execute the output command:
 terraform output -raw configure_kubectl
 ```
 
+List the instances and clusters you created
+```shell
+akuity argocd instance list --organization-name eks-blueprints
+akuity argocd cluster list --organization-name eks-blueprints --instance-name gitops-bridge
+```
+
 Terraform added GitOps Bridge Metadata to ArgoCD Cluster in Akuity.
 The annotations contain metadata for the addons' Helm charts and ArgoCD ApplicationSets.
-In the EKS cluster there is a secret with a projection of the annotations
 ```shell
-kubectl get secret -n akuity cplane -o json | jq '.metadata.annotations' | grep -v "kubectl.kubernetes.io/last-applied-configuration"
+akuity argocd cluster get \
+ex-eks-akuity-dev \
+--organization-name eks-blueprints \
+--instance-name gitops-bridge \
+-o json | jq .data.annotations
 ```
 The output looks like the following:
 ```json
 {
   "addons_repo_basepath": "gitops/",
   "addons_repo_path": "bootstrap/control-plane/addons",
-  "addons_repo_revision": "main",
-  "addons_repo_url": "git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon",
-  "workload_repo_basepath": "gitops/",
-  "workload_repo_path": "apps",
-  "workload_repo_revision": "main",
-  "workload_repo_url": "git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon"
-  "aws_account_id": "0123456789",
-  "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::0123456789:role/aws-cloudwatch-metrics-20231029150636632700000028",
+  "addons_repo_revision": "update-ek-examples-10-30",
+  "addons_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon",
+  "aws_account_id": "015299085168",
+  "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::015299085168:role/aws-cloudwatch-metrics-20231031031132065600000004",
   "aws_cloudwatch_metrics_namespace": "amazon-cloudwatch",
   "aws_cloudwatch_metrics_service_account": "aws-cloudwatch-metrics",
   "aws_cluster_name": "ex-eks-akuity",
-  "aws_for_fluentbit_iam_role_arn": "arn:aws:iam::0123456789:role/aws-for-fluent-bit-20231029150636632700000029",
-  "aws_for_fluentbit_log_group_name": "/aws/eks/ex-eks-akuity/aws-fluentbit-logs-20231029150605912500000017",
+  "aws_for_fluentbit_iam_role_arn": "arn:aws:iam::015299085168:role/aws-for-fluent-bit-20231031031132065400000002",
+  "aws_for_fluentbit_log_group_name": "/aws/eks/ex-eks-akuity/aws-fluentbit-logs-20231031031132064900000001",
   "aws_for_fluentbit_namespace": "kube-system",
   "aws_for_fluentbit_service_account": "aws-for-fluent-bit-sa",
-  "aws_load_balancer_controller_iam_role_arn": "arn:aws:iam::0123456789:role/alb-controller-20231029150636630700000025",
+  "aws_load_balancer_controller_iam_role_arn": "arn:aws:iam::015299085168:role/alb-controller-20231031031132066500000007",
   "aws_load_balancer_controller_namespace": "kube-system",
   "aws_load_balancer_controller_service_account": "aws-load-balancer-controller-sa",
   "aws_region": "us-west-2",
-  "aws_vpc_id": "vpc-0d1e6da491803e111",
-  "cert_manager_iam_role_arn": "arn:aws:iam::0123456789:role/cert-manager-20231029150636632300000026",
+  "aws_vpc_id": "vpc-0208191bd2c629587",
+  "cert_manager_iam_role_arn": "arn:aws:iam::015299085168:role/cert-manager-20231031031132065900000005",
   "cert_manager_namespace": "cert-manager",
   "cert_manager_service_account": "cert-manager",
-  "cluster_name": "in-cluster",
-  "environment": "dev",
-  "external_dns_namespace": "external-dns",
-  "external_dns_service_account": "external-dns-sa",
-  "external_secrets_iam_role_arn": "arn:aws:iam::0123456789:role/external-secrets-20231029150636632600000027",
+  "external_secrets_iam_role_arn": "arn:aws:iam::015299085168:role/external-secrets-20231031031132065500000003",
   "external_secrets_namespace": "external-secrets",
   "external_secrets_service_account": "external-secrets-sa",
-  "karpenter_iam_role_arn": "arn:aws:iam::0123456789:role/karpenter-20231029150636630500000024",
+  "karpenter_iam_role_arn": "arn:aws:iam::015299085168:role/karpenter-20231031031132066700000008",
   "karpenter_namespace": "karpenter",
-  "karpenter_node_instance_profile_name": "karpenter-ex-eks-akuity-2023102915060627290000001a",
+  "karpenter_node_instance_profile_name": "karpenter-ex-eks-akuity-20231031031132396100000009",
   "karpenter_service_account": "karpenter",
   "karpenter_sqs_queue_name": "karpenter-ex-eks-akuity",
+  "workload_repo_basepath": "gitops/",
+  "workload_repo_path": "apps",
+  "workload_repo_revision": "update-ek-examples-10-30",
+  "workload_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon"
 }
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
 ```shell
-kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o json | jq '.items[0].metadata.labels'
-kubectl get secret -n akuity cplane -o json | jq '.metadata.labels'
+akuity argocd cluster get \
+ex-eks-akuity-dev \
+--organization-name eks-blueprints \
+--instance-name gitops-bridge \
+-o json | jq .data.labels | grep -v false
 ```
 The output looks like the following:
 ```json
 {
-  "argocd.argoproj.io/secret-type": "cluster",
   "aws_cluster_name": "ex-eks-akuity",
-  "cluster_name": "in-cluster",
-  "enable_argocd": "true",
   "enable_aws_cloudwatch_metrics": "true",
   "enable_aws_ebs_csi_resources": "true",
   "enable_aws_for_fluentbit": "true",
+  "enable_aws_ingress_nginx": "true",
   "enable_aws_load_balancer_controller": "true",
   "enable_cert_manager": "true",
-  "enable_external_dns": "true",
   "enable_external_secrets": "true",
-  "enable_ingress_nginx": "true",
   "enable_karpenter": "true",
   "enable_kyverno": "true",
   "enable_metrics_server": "true",
@@ -123,8 +124,7 @@ The output looks like the following:
 ### Login with ArgoCD CLI
 
 ```shell
-export AKUITY_INSTANCE=$(akuity --org-name $TF_VAR_akp_org_name argocd instance list -o json | jq -r '.[0].name')
-export ARGOCD_SERVER=$(akuity --org-name $TF_VAR_akp_org_name argocd instance list -o json | jq -r '.[0].hostname')
+export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
 export ARGOCD_OPTS="--grpc-web"
 argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
 ```
@@ -136,10 +136,12 @@ Bootstrap the addons using ArgoCD:
 argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
 ```
 
+
+
 ### Monitor GitOps Progress for Addons
 Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
 ```shell
-argocd app list
+watch argocd app list
 ```
 The output looks like this
 ```
@@ -206,7 +208,8 @@ kubectl get -n guestbook deployments,service,ep,ingress
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
 ```shell
-curl -I $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+kubectl exec -n guestbook deploy/guestbook-ui -- \
+curl -I -s $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 
@@ -220,6 +223,10 @@ echo "Application URL: http://$(kubectl get -n ingress-nginx svc ingress-nginx-c
 Check the application's CPU and memory metrics:
 ```shell
 kubectl top pods -n guestbook
+```
+Check all pods CPU and memory metrics:
+```shell
+kubectl top pods -A
 ```
 
 Output should look like the following:
@@ -271,4 +278,20 @@ kyverno             kyverno-reports-controller-5fcd875795-mk2dr         1m      
 To tear down all the resources and the EKS cluster, run the following command:
 ```shell
 ./destroy.sh
+```
+
+
+## Appendix
+
+## Fork GitOps Repositories
+To modify the `values.yaml` file for addons or the workload manifest files (.ie yaml), you'll need to fork this repository: [gitops-bridge-dev/kubecon-2023-na-argocon](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
+After forking, update the following environment variables to point to you fork, replacing the default values.
+```shell
+export TF_VAR_gitops_addons_org=git@github.com:<org or user>
+export TF_VAR_gitops_addons_repo=kubecon-2023-na-argocon
+export TF_VAR_gitops_addons_revision=main
+
+export TF_VAR_gitops_workload_org=git@github.com:<org or user>
+export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
+export TF_VAR_gitops_workload_revision=main
 ```
