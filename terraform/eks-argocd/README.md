@@ -28,20 +28,16 @@ Before you begin, make sure you have the following command line tools installed:
 - kubectl
 - argocd
 
-## Fork the Git Repositories
+## (Optional) Fork the GitOps git repositories
+See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) for more info on the terraform variables to override.
 
-### Fork the Addon GitOps Repo
-1. Fork the git repository for addons [here](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
-2. Update the following environment variables to point to your fork by changing the default values:
-```shell
-export TF_VAR_gitops_addons_org=https://github.com/<org or user>
-export TF_VAR_gitops_workload_org=https://github.com/<org or user>
-```
 
-## Deploy the Kubernetes Cluster
+## Deploy the EKS Cluster
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
+terraform apply -target="module.vpc" -auto-approve
+terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
@@ -98,7 +94,7 @@ The output looks like the following:
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
 ```shell
-kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o json | jq '.items[0].metadata.labels'
+kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o json | jq '.items[0].metadata.labels' | grep -v false | jq .
 ```
 The output looks like the following:
 ```json
@@ -138,7 +134,7 @@ watch kubectl get applications -n argocd
 ### Verify the Addons
 Verify that the addons are ready:
 ```shell
-kubectl get deployment- A
+kubectl get deployment -A
 ```
 
 ## Access ArgoCD
@@ -146,7 +142,6 @@ Access ArgoCD's UI, run the command from the output:
 ```shell
 terraform output -raw access_argocd
 ```
-
 
 ## Deploy the Workloads
 Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
@@ -166,11 +161,25 @@ Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n guestbook deployments,service,ep,ingress
 ```
+The expected output should look like the following:
+```text
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           3m7s
 
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   172.20.211.185   <none>        80/TCP    3m7s
+
+NAME                     ENDPOINTS        AGE
+endpoints/guestbook-ui   10.0.31.115:80   3m7s
+
+NAME                   CLASS   HOSTS   ADDRESS                          PORTS   AGE
+ingress/guestbook-ui   nginx   *       <>.elb.us-west-2.amazonaws.com   80      3m7s
+```
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
 ```shell
-curl -I $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+kubectl exec -n guestbook deploy/guestbook-ui -- \
+curl -I -s $(kubectl get -n ingress-nginx svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 
@@ -185,9 +194,27 @@ Check the application's CPU and memory metrics:
 ```shell
 kubectl top pods -n guestbook
 ```
-
-## Destroy the Kubernetes Cluster
+Check all pods CPU and memory metrics:
+```shell
+kubectl top pods -A
+```
+## Destroy the EKS Cluster
 To tear down all the resources and the EKS cluster, run the following command:
 ```shell
 ./destroy.sh
+```
+
+## Appendix
+
+## Fork GitOps Repositories
+To modify the `values.yaml` file for addons or the workload manifest files (.ie yaml), you'll need to fork this repository: [gitops-bridge-dev/kubecon-2023-na-argocon](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
+After forking, update the following environment variables to point to you fork, replacing the default values.
+```shell
+export TF_VAR_gitops_addons_org=git@github.com:<org or user>
+export TF_VAR_gitops_addons_repo=kubecon-2023-na-argocon
+export TF_VAR_gitops_addons_revision=main
+
+export TF_VAR_gitops_workload_org=git@github.com:<org or user>
+export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
+export TF_VAR_gitops_workload_revision=main
 ```

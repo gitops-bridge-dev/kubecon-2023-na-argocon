@@ -1,18 +1,6 @@
-
-# output "eks_auth" {
-#   description = "EKS Auth Config"
-#   value       = <<-EOT
-#     host                   = ${module.eks.cluster_endpoint}
-#     cluster_ca_certificate = ${base64decode(module.eks.cluster_certificate_authority_data)}
-#     token                  = ${data.aws_eks_cluster_auth.this.token}
-#   EOT
-#   sensitive = true
-# }
-
 locals {
   name   = "ex-${replace(basename(path.cwd), "_", "-")}"
   region = var.region
-  environment = "dev"
 
   cluster_version = var.kubernetes_version
 
@@ -107,10 +95,7 @@ locals {
     }
   )
 
-  # argocd_apps = {
-  #   addons    = file("${path.module}/bootstrap/addons.yaml")
-  #   workloads = file("${path.module}/bootstrap/workloads.yaml")
-  # }
+
 
   tags = {
     Blueprint  = local.name
@@ -118,6 +103,9 @@ locals {
   }
 }
 
+################################################################################
+# GitOps Bridge: Bootstrap for Akuity
+################################################################################
 module "akuity" {
   source = "./modules/akuity"
 
@@ -125,7 +113,6 @@ module "akuity" {
 
   cluster = {
     cluster_name = module.eks.cluster_name
-    environment  = local.environment
     metadata = local.addons_metadata
     addons   = local.addons
   }
@@ -133,22 +120,6 @@ module "akuity" {
     repo-my-private-ssh-repo = {
       url           = local.gitops_addons_url
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
-      insecure      = true
-      enableLfs     = true
     }
   }
 }
-
-################################################################################
-# GitOps Bridge: Bootstrap
-################################################################################
-# module "gitops_bridge_bootstrap" {
-#   source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v2.0.0"
-
-#   cluster = {
-#     metadata = local.addons_metadata
-#     addons   = local.addons
-#   }
-#   argocd     = { create_namespace = false }
-#   depends_on = [kubernetes_namespace.argocd, kubernetes_secret.git_secrets]
-# }

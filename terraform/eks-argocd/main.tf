@@ -95,10 +95,15 @@ locals {
     }
   )
 
-  # argocd_apps = {
-  #   addons    = file("${path.module}/bootstrap/addons.yaml")
-  #   workloads = file("${path.module}/bootstrap/workloads.yaml")
-  # }
+  argocd_app_of_appsets_addons = var.enable_gitops_auto_addons ? {
+    addons = file("${path.module}/../../gitops/bootstrap/control-plane/exclude/addons.yaml")
+  } : {}
+  argocd_app_of_appsets_workloads = var.enable_gitops_auto_workloads ? {
+    workloads = file("${path.module}/../../gitops/bootstrap/workloads/exclude/workloads.yaml")
+  } : {}
+
+  argocd_apps = merge(local.argocd_app_of_appsets_addons, local.argocd_app_of_appsets_workloads)
+
 
   tags = {
     Blueprint  = local.name
@@ -117,6 +122,7 @@ module "gitops_bridge_bootstrap" {
     metadata = local.addons_metadata
     addons   = local.addons
   }
+  apps       = local.argocd_apps
   argocd     = { create_namespace = false }
   depends_on = [kubernetes_namespace.argocd, kubernetes_secret.git_secrets]
 }

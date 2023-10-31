@@ -12,8 +12,8 @@ spec:
         app: guestbook-ui
     spec:
       containers:
-      - image: nginx
-      #- image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+      #- image: nginx
+      - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
         name: guestbook-ui
         ports:
         - name: http

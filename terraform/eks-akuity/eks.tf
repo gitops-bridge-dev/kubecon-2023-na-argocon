@@ -45,6 +45,17 @@ module "eks" {
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     }
   }
+  # Extend node-to-node security group rules
+  node_security_group_additional_rules = {
+    ingress_nginx = {
+      description = "Allow nginx ingress port 80 node to node"
+      protocol    = "tcp"
+      from_port   = 80
+      to_port     = 80
+      type        = "ingress"
+      self        = true
+    }
+  }
   tags = local.tags
 }
 
