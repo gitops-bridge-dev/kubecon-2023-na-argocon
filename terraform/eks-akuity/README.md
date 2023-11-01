@@ -8,7 +8,7 @@ Before you begin, make sure you have the following command line tools installed:
 - argocd
 - akuity
 
-Get a free account on akuity.com, and create an API Key with org access
+Get a free trial account on [Akuity Platform](https://akuity.io/), and create an API Key with org access
 ```shell
 export AKUITY_API_KEY_ID=xxxxxxxxxxxxx
 export AKUITY_API_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -45,7 +45,7 @@ akuity argocd instance list --organization-name eks-blueprints
 akuity argocd cluster list --organization-name eks-blueprints --instance-name gitops-bridge
 ```
 
-Terraform added GitOps Bridge Metadata to ArgoCD Cluster in Akuity.
+Terraform added GitOps Bridge Metadata to ArgoCD Instance.
 The annotations contain metadata for the addons' Helm charts and ArgoCD ApplicationSets.
 ```shell
 akuity argocd cluster get \
@@ -60,7 +60,7 @@ The output looks like the following:
   "addons_repo_basepath": "gitops/",
   "addons_repo_path": "bootstrap/control-plane/addons",
   "addons_repo_revision": "update-ek-examples-10-30",
-  "addons_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon",
+  "addons_repo_url": "https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon",
   "aws_account_id": "0123456789",
   "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::0123456789:role/aws-cloudwatch-metrics-20231031031132065600000004",
   "aws_cloudwatch_metrics_namespace": "amazon-cloudwatch",
@@ -89,7 +89,7 @@ The output looks like the following:
   "workload_repo_basepath": "gitops/",
   "workload_repo_path": "apps",
   "workload_repo_revision": "update-ek-examples-10-30",
-  "workload_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon"
+  "workload_repo_url": "https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon"
 }
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
@@ -119,7 +119,12 @@ The output looks like the following:
 }
 ```
 
-
+### Login in ArgoCD CLI
+```shell
+export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
+export ARGOCD_OPTS="--grpc-web"
+argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
+```
 
 ### Monitor GitOps Progress for Addons
 Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
@@ -163,7 +168,7 @@ Project:            default
 Server:             ex-eks-akuity-dev
 Namespace:          guestbook
 URL:                https://aggowmg7gr5hbl23.cd.akuity.cloud/applications/guestbook
-Repo:               https://github.com/csantanapr/kubecon-2023-na-argocon
+Repo:               https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon
 Target:             update-eks-10-31
 Path:               gitops/apps/guestbook
 SyncWindow:         Sync Allowed
@@ -296,13 +301,6 @@ Only applicable if you don't deploy the bootstrap by setting the following varia
 ```shell
 export TF_VAR_enable_gitops_auto_bootstrap=false
 ```
-
-```shell
-export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
-export ARGOCD_OPTS="--grpc-web"
-argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
-```
-
 
 ## Deploy the Addons
 Bootstrap the addons using ArgoCD:

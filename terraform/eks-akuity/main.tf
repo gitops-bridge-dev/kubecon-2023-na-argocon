@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_availability_zones" "available" {}
+
 locals {
   name   = "ex-${replace(basename(path.cwd), "_", "-")}"
   region = var.region
@@ -95,8 +98,6 @@ locals {
       workload_repo_revision = local.gitops_workload_revision
     }
   )
-
-
 
   tags = {
     Blueprint  = local.name
