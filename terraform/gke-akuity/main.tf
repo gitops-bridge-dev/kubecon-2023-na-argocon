@@ -22,11 +22,11 @@ locals {
   gitops_workload_url      = "${local.gitops_workload_org}/${local.gitops_workload_repo}"
 
   oss_addons = {
-    enable_argocd                          = try(var.addons.enable_argocd, true)
-    enable_argo_rollouts                   = try(var.addons.enable_argo_rollouts, false)
-    enable_argo_events                     = try(var.addons.enable_argo_events, false)
-    enable_argo_workflows                  = try(var.addons.enable_argo_workflows, false)
-    enable_ingress_nginx                   = try(var.addons.enable_ingress_nginx, false)
+    enable_argocd         = try(var.addons.enable_argocd, true)
+    enable_argo_rollouts  = try(var.addons.enable_argo_rollouts, false)
+    enable_argo_events    = try(var.addons.enable_argo_events, false)
+    enable_argo_workflows = try(var.addons.enable_argo_workflows, false)
+    enable_ingress_nginx  = try(var.addons.enable_ingress_nginx, false)
   }
   addons = merge(
     local.oss_addons,
@@ -74,8 +74,8 @@ module "akuity" {
       url           = local.gitops_addons_url
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
-  }: {}
-  depends_on = [ google_container_cluster.gke-01 ]
+  } : {}
+  depends_on = [google_container_cluster.gke-01]
 }
 
 ################################################################################
@@ -85,13 +85,13 @@ module "argocd" {
   source = "./modules/argocd-bootstrap"
 
   addons = {
-    repo_url = local.gitops_addons_url
-    path = "${local.gitops_addons_basepath}${local.gitops_addons_path}"
+    repo_url        = local.gitops_addons_url
+    path            = "${local.gitops_addons_basepath}${local.gitops_addons_path}"
     target_revision = local.gitops_addons_revision
   }
   workloads = {
-    repo_url = local.gitops_workload_url
-    path = "${local.gitops_workload_basepath}bootstrap/workloads"
+    repo_url        = local.gitops_workload_url
+    path            = "${local.gitops_workload_basepath}bootstrap/workloads"
     target_revision = local.gitops_addons_revision
   }
   depends_on = [module.akuity]

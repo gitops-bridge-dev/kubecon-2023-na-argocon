@@ -7,7 +7,7 @@ data "google_container_engine_versions" "gke_version" {
 }
 
 resource "google_container_cluster" "gke-01" {
-  name     = "${local.name}"
+  name     = local.name
   location = var.gke_region
 
   # We can't create a cluster with no node pool defined, but we want to only use

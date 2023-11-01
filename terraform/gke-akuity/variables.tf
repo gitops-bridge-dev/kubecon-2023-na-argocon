@@ -13,8 +13,8 @@ variable "argocd_admin_password" {
 
 variable "enable_git_ssh" {
   description = "use git ssh"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "ssh_key_path" {
@@ -37,7 +37,7 @@ variable "gke_password" {
 }
 
 variable "gke_num_nodes" {
-  default     = 1
+  default     = 2
   description = "number of gke nodes (per zone)"
 }
 
@@ -58,17 +58,10 @@ variable "addons" {
   type        = any
   default = {
     # aws
-    enable_cert_manager                 = true
-    enable_aws_ebs_csi_resources        = true # generate gp2 and gp3 storage classes for ebs-csi
-    enable_aws_cloudwatch_metrics       = true
-    enable_external_secrets             = true
-    enable_aws_load_balancer_controller = true
-    enable_aws_for_fluentbit            = true
-    enable_karpenter                    = true
-    enable_aws_ingress_nginx            = true # inginx configured with AWS NLB
-    # oss
-    enable_metrics_server = false
-    enable_kyverno        = true
+    enable_cert_manager     = true
+    enable_external_secrets = true
+    enable_kyverno          = true
+    enable_ingress_nginx    = true
     # Use Akuity ArgoCD
     enable_argocd = false
   }
