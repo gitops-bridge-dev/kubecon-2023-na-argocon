@@ -32,9 +32,7 @@ See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) f
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
-terraform apply -target="module.vpc" -auto-approve
-terraform apply -target="module.eks" -auto-approve
-terraform apply -target="module.akuity" -auto-approve
+terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
 ```shell
@@ -62,7 +60,7 @@ The output looks like the following:
   "addons_repo_basepath": "gitops/",
   "addons_repo_path": "bootstrap/control-plane/addons",
   "addons_repo_revision": "update-ek-examples-10-30",
-  "addons_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon",
+  "addons_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon",
   "aws_account_id": "0123456789",
   "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::0123456789:role/aws-cloudwatch-metrics-20231031031132065600000004",
   "aws_cloudwatch_metrics_namespace": "amazon-cloudwatch",
@@ -91,7 +89,7 @@ The output looks like the following:
   "workload_repo_basepath": "gitops/",
   "workload_repo_path": "apps",
   "workload_repo_revision": "update-ek-examples-10-30",
-  "workload_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon"
+  "workload_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon"
 }
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
@@ -100,7 +98,7 @@ akuity argocd cluster get \
 ex-eks-akuity-dev \
 --organization-name eks-blueprints \
 --instance-name gitops-bridge \
--o json | jq .data.labels | grep -v false
+-o json | jq .data.labels | grep -v false | jq .
 ```
 The output looks like the following:
 ```json
@@ -121,21 +119,6 @@ The output looks like the following:
 }
 ```
 
-### Login with ArgoCD CLI
-
-```shell
-export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
-export ARGOCD_OPTS="--grpc-web"
-argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
-```
-
-
-## Deploy the Addons
-Bootstrap the addons using ArgoCD:
-```shell
-argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
-```
-
 
 
 ### Monitor GitOps Progress for Addons
@@ -146,17 +129,17 @@ watch argocd app list
 The output looks like this
 ```
 NAME                                                         CLUSTER            NAMESPACE          PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                               PATH                                        TARGET
-argocd/addon-ex-eks-akuity-dev-aws-cloudwatch-metrics        ex-eks-akuity-dev  amazon-cloudwatch  default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-aws-ebs-csi-resources         ex-eks-akuity-dev                     default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon  gitops/charts/addons/aws-ebs-csi/resources  main
-argocd/addon-ex-eks-akuity-dev-aws-for-fluent-bit            ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-aws-load-balancer-controller  ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-cert-manager                  ex-eks-akuity-dev  cert-manager       default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-external-secrets              ex-eks-akuity-dev  external-secrets   default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-ingress-nginx                 ex-eks-akuity-dev  ingress-nginx      default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-karpenter                     ex-eks-akuity-dev  karpenter          default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-kyverno                       ex-eks-akuity-dev  kyverno            default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-metrics-server                ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/cluster-addons                                        in-cluster         argocd             default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon  gitops/bootstrap/control-plane/addons       main
+argocd/addon-ex-eks-akuity-dev-aws-cloudwatch-metrics        ex-eks-akuity-dev  amazon-cloudwatch  default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-aws-ebs-csi-resources         ex-eks-akuity-dev                     default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon  gitops/charts/addons/aws-ebs-csi/resources  main
+argocd/addon-ex-eks-akuity-dev-aws-for-fluent-bit            ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-aws-load-balancer-controller  ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-cert-manager                  ex-eks-akuity-dev  cert-manager       default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-external-secrets              ex-eks-akuity-dev  external-secrets   default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-ingress-nginx                 ex-eks-akuity-dev  ingress-nginx      default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-karpenter                     ex-eks-akuity-dev  karpenter          default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-kyverno                       ex-eks-akuity-dev  kyverno            default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-metrics-server                ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/cluster-addons                                        in-cluster         argocd             default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon  gitops/bootstrap/control-plane/addons       main
 ```
 
 
@@ -166,37 +149,32 @@ Verify that the addons are ready:
 kubectl get deployment -A
 ```
 
-
-## Deploy the Workloads
-Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
-```shell
-argocd appset create --upsert ../../gitops/bootstrap/workloads/exclude/workloads-akuity.yaml
-```
-
 ### Monitor GitOps Progress for Workloads
 Watch until the Workloads ArgoCD Application is `Healthy`
 ```shell
-watch argocd app get workload
+watch argocd app get guestbook
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
 Output should look like the following:
 ```text
-Name:               argocd/workload
+Name:               argocd/guestbook
 Project:            default
-Server:             in-cluster
-Namespace:          argocd
-URL:                https://k9gjmlz7hz2jiqe2.cd.akuity.cloud/applications/workload
-Repo:               git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon
-Target:             main
-Path:               gitops/bootstrap/workloads
+Server:             ex-eks-akuity-dev
+Namespace:          guestbook
+URL:                https://aggowmg7gr5hbl23.cd.akuity.cloud/applications/guestbook
+Repo:               https://github.com/csantanapr/kubecon-2023-na-argocon
+Target:             update-eks-10-31
+Path:               gitops/apps/guestbook
 SyncWindow:         Sync Allowed
 Sync Policy:        Automated
-Sync Status:        Synced to main (fc6768e)
+Sync Status:        Synced to update-eks-10-31 (efd902c)
 Health Status:      Healthy
 
-GROUP        KIND            NAMESPACE  NAME       STATUS  HEALTH   HOOK  MESSAGE
-argoproj.io  ApplicationSet  argocd     guestbook  Synced  Healthy        applicationset.argoproj.io/guestbook created
+GROUP              KIND        NAMESPACE  NAME          STATUS  HEALTH   HOOK  MESSAGE
+                   Service     guestbook  guestbook-ui  Synced  Healthy        service/guestbook-ui unchanged
+apps               Deployment  guestbook  guestbook-ui  Synced  Healthy        deployment.apps/guestbook-ui unchanged
+networking.k8s.io  Ingress     guestbook  guestbook-ui  Synced  Healthy        ingress.networking.k8s.io/guestbook-ui created
 ```
 
 ### Verify the Application
@@ -204,6 +182,21 @@ Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n guestbook deployments,service,ep,ingress
 ```
+The expected output should look like the following:
+```text
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           3m7s
+
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   172.20.211.185   <none>        80/TCP    3m7s
+
+NAME                     ENDPOINTS        AGE
+endpoints/guestbook-ui   10.0.31.115:80   3m7s
+
+NAME                   CLASS   HOSTS   ADDRESS                          PORTS   AGE
+ingress/guestbook-ui   nginx   *       <>.elb.us-west-2.amazonaws.com   80      3m7s
+```
+
 
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
@@ -287,11 +280,38 @@ To tear down all the resources and the EKS cluster, run the following command:
 To modify the `values.yaml` file for addons or the workload manifest files (.ie yaml), you'll need to fork this repository: [gitops-bridge-dev/kubecon-2023-na-argocon](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
 After forking, update the following environment variables to point to you fork, replacing the default values.
 ```shell
-export TF_VAR_gitops_addons_org=git@github.com:<org or user>
+export TF_VAR_gitops_addons_org=https://github.com/<org or user>
 export TF_VAR_gitops_addons_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_addons_revision=main
 
-export TF_VAR_gitops_workload_org=git@github.com:<org or user>
+export TF_VAR_gitops_workload_org=https://github.com/<org or user>
 export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_workload_revision=main
+```
+
+
+### Manually deploy Bootstrap apps
+
+Only applicable if you don't deploy the bootstrap by setting the following variable to false (default true)
+```shell
+export TF_VAR_enable_gitops_auto_bootstrap=false
+```
+
+```shell
+export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
+export ARGOCD_OPTS="--grpc-web"
+argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
+```
+
+
+## Deploy the Addons
+Bootstrap the addons using ArgoCD:
+```shell
+argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
+```
+
+## Deploy the Workloads
+Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
+```shell
+argocd appset create --upsert ../../gitops/bootstrap/workloads/exclude/workloads-akuity.yaml
 ```

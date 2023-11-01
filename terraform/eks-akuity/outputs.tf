@@ -33,5 +33,6 @@ output "access_argocd" {
 }
 
 output "akuity_server_addr" {
-  value = module.akuity.akuity_server_addr
+  description = "ArgoCD Server URL on the Akuity Platform"
+  value       = module.akuity.akuity_server_addr
 }

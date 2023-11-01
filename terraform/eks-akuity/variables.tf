@@ -12,9 +12,9 @@ variable "argocd_admin_password" {
 }
 
 variable "enable_git_ssh" {
-  description = "Use git ssh to access all git repos using format git@github.com:<org>"
-  type        = bool
-  default     = true
+  description = "use git ssh"
+  type = bool
+  default = false
 }
 variable "ssh_key_path" {
   description = "SSH key path for git access"
@@ -53,14 +53,14 @@ variable "addons" {
     enable_metrics_server = true
     enable_kyverno        = true
     # Use Akuity ArgoCD
-    enable_argocd         = false
+    enable_argocd = false
   }
 }
 # Addons Git
 variable "gitops_addons_org" {
   description = "Git repository org/user contains for addons"
   type        = string
-  default     = "git@github.com:gitops-bridge-dev"
+  default     = "https://github.com/gitops-bridge-dev"
 }
 variable "gitops_addons_repo" {
   description = "Git repository contains for addons"
@@ -86,7 +86,7 @@ variable "gitops_addons_path" {
 variable "gitops_workload_org" {
   description = "Git repository org/user contains for workload"
   type        = string
-  default     = "git@github.com:gitops-bridge-dev"
+  default     = "https://github.com/gitops-bridge-dev"
 }
 variable "gitops_workload_repo" {
   description = "Git repository contains for workload"
@@ -109,14 +109,8 @@ variable "gitops_workload_path" {
   default     = "apps"
 }
 
-variable "enable_gitops_auto_addons" {
+variable "enable_gitops_auto_bootstrap" {
   description = "Automatically deploy addons"
   type        = bool
-  default     = false
-}
-
-variable "enable_gitops_auto_workloads" {
-  description = "Automatically deploy addons"
-  type        = bool
-  default     = false
+  default     = true
 }
