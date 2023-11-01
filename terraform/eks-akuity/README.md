@@ -32,9 +32,7 @@ See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) f
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
-terraform apply -target="module.vpc" -auto-approve
-terraform apply -target="module.eks" -auto-approve
-terraform apply -target="module.akuity" -auto-approve
+terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
 ```shell
@@ -100,7 +98,7 @@ akuity argocd cluster get \
 ex-eks-akuity-dev \
 --organization-name eks-blueprints \
 --instance-name gitops-bridge \
--o json | jq .data.labels | grep -v false
+-o json | jq .data.labels | grep -v false | jq .
 ```
 The output looks like the following:
 ```json

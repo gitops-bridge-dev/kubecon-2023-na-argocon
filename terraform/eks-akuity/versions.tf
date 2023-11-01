@@ -18,6 +18,10 @@ terraform {
       source  = "akuity/akp"
       version = "~> 0.6.1"
     }
+    argocd = {
+      source  = "oboukili/argocd"
+      version = "6.0.3"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

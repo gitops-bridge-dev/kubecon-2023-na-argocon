@@ -32,4 +32,6 @@ module "eks_blueprints_addons" {
   enable_aws_gateway_api_controller   = local.aws_addons.enable_aws_gateway_api_controller
 
   tags = local.tags
+
+  depends_on = [ module.eks ]
 }

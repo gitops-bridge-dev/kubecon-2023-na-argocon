@@ -198,6 +198,7 @@ Check all pods CPU and memory metrics:
 ```shell
 kubectl top pods -A
 ```
+
 ## Destroy the EKS Cluster
 To tear down all the resources and the EKS cluster, run the following command:
 ```shell

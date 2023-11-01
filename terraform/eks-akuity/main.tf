@@ -122,4 +122,5 @@ module "akuity" {
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
   }
+  depends_on = [ module.eks_blueprints_addons ]
 }
