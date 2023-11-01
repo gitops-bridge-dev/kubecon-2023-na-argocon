@@ -31,6 +31,12 @@ terraform {
   #   key    = "e2e/ipv4-prefix-delegation/terraform.tfstate"
   # }
 }
+provider "argocd" {
+  server_addr = module.akuity.akuity_server_addr
+  username    = "admin"
+  password    = var.argocd_admin_password
+}
+
 provider "akp" {
   org_name = var.akp_org_name
   # api_key_id     = AKUITY_API_KEY_ID
