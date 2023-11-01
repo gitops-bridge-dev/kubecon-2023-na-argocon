@@ -119,21 +119,6 @@ The output looks like the following:
 }
 ```
 
-### Login with ArgoCD CLI
-
-```shell
-export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
-export ARGOCD_OPTS="--grpc-web"
-argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
-```
-
-
-## Deploy the Addons
-Bootstrap the addons using ArgoCD:
-```shell
-argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
-```
-
 
 
 ### Monitor GitOps Progress for Addons
@@ -164,37 +149,32 @@ Verify that the addons are ready:
 kubectl get deployment -A
 ```
 
-
-## Deploy the Workloads
-Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
-```shell
-argocd appset create --upsert ../../gitops/bootstrap/workloads/exclude/workloads-akuity.yaml
-```
-
 ### Monitor GitOps Progress for Workloads
 Watch until the Workloads ArgoCD Application is `Healthy`
 ```shell
-watch argocd app get workload
+watch argocd app get guestbook
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
 Output should look like the following:
 ```text
-Name:               argocd/workload
+Name:               argocd/guestbook
 Project:            default
-Server:             in-cluster
-Namespace:          argocd
-URL:                https://k9gjmlz7hz2jiqe2.cd.akuity.cloud/applications/workload
-Repo:               git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon
-Target:             main
-Path:               gitops/bootstrap/workloads
+Server:             ex-eks-akuity-dev
+Namespace:          guestbook
+URL:                https://aggowmg7gr5hbl23.cd.akuity.cloud/applications/guestbook
+Repo:               git@github.com:csantanapr/kubecon-2023-na-argocon
+Target:             update-eks-10-31
+Path:               gitops/apps/guestbook
 SyncWindow:         Sync Allowed
 Sync Policy:        Automated
-Sync Status:        Synced to main (fc6768e)
+Sync Status:        Synced to update-eks-10-31 (efd902c)
 Health Status:      Healthy
 
-GROUP        KIND            NAMESPACE  NAME       STATUS  HEALTH   HOOK  MESSAGE
-argoproj.io  ApplicationSet  argocd     guestbook  Synced  Healthy        applicationset.argoproj.io/guestbook created
+GROUP              KIND        NAMESPACE  NAME          STATUS  HEALTH   HOOK  MESSAGE
+                   Service     guestbook  guestbook-ui  Synced  Healthy        service/guestbook-ui unchanged
+apps               Deployment  guestbook  guestbook-ui  Synced  Healthy        deployment.apps/guestbook-ui unchanged
+networking.k8s.io  Ingress     guestbook  guestbook-ui  Synced  Healthy        ingress.networking.k8s.io/guestbook-ui created
 ```
 
 ### Verify the Application
@@ -202,6 +182,21 @@ Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n guestbook deployments,service,ep,ingress
 ```
+The expected output should look like the following:
+```text
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           3m7s
+
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   172.20.211.185   <none>        80/TCP    3m7s
+
+NAME                     ENDPOINTS        AGE
+endpoints/guestbook-ui   10.0.31.115:80   3m7s
+
+NAME                   CLASS   HOSTS   ADDRESS                          PORTS   AGE
+ingress/guestbook-ui   nginx   *       <>.elb.us-west-2.amazonaws.com   80      3m7s
+```
+
 
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `curl`:
@@ -292,4 +287,31 @@ export TF_VAR_gitops_addons_revision=main
 export TF_VAR_gitops_workload_org=git@github.com:<org or user>
 export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_workload_revision=main
+```
+
+
+### Manually deploy Bootstrap apps
+
+Only applicable if you don't deploy the bootstrap by setting the following variable to false (default true)
+```shell
+export TF_VAR_enable_gitops_auto_bootstrap=false
+```
+
+```shell
+export ARGOCD_SERVER=$(terraform output -raw akuity_server_addr)
+export ARGOCD_OPTS="--grpc-web"
+argocd login $ARGOCD_SERVER --username admin --password $TF_VAR_argocd_admin_password
+```
+
+
+## Deploy the Addons
+Bootstrap the addons using ArgoCD:
+```shell
+argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
+```
+
+## Deploy the Workloads
+Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
+```shell
+argocd appset create --upsert ../../gitops/bootstrap/workloads/exclude/workloads-akuity.yaml
 ```

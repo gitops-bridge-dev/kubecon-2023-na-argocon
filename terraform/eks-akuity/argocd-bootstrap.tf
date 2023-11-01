@@ -5,7 +5,7 @@ provider "argocd" {
 }
 
 resource "argocd_application" "bootstrap" {
-  count = var.enable_gitops_auto_addons ? 1 : 0
+  count = var.enable_gitops_auto_bootstrap ? 1 : 0
 
   metadata {
     name      = "bootstrap"
@@ -31,6 +31,15 @@ resource "argocd_application" "bootstrap" {
         exclude = "exclude/*"
       }
     }
+    source {
+      repo_url        = local.gitops_workload_url
+      path            = "${local.gitops_workload_basepath}bootstrap/workloads"
+      target_revision = local.gitops_workload_revision
+      directory {
+        recurse = true
+        exclude = "exclude/*"
+      }
+    }
     sync_policy {
       automated {
         prune     = true
@@ -38,4 +47,5 @@ resource "argocd_application" "bootstrap" {
       }
     }
   }
+  depends_on = [module.akuity]
 }

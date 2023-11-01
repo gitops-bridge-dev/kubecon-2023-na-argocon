@@ -33,5 +33,5 @@ module "eks_blueprints_addons" {
 
   tags = local.tags
 
-  depends_on = [ module.eks ]
+  depends_on = [module.eks]
 }

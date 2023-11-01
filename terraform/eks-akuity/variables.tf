@@ -11,11 +11,7 @@ variable "argocd_admin_password" {
   description = "The password to use for the `admin` Argo CD user."
 }
 
-variable "enable_git_ssh" {
-  description = "Use git ssh to access all git repos using format git@github.com:<org>"
-  type        = bool
-  default     = true
-}
+
 variable "ssh_key_path" {
   description = "SSH key path for git access"
   type        = string
@@ -53,7 +49,7 @@ variable "addons" {
     enable_metrics_server = true
     enable_kyverno        = true
     # Use Akuity ArgoCD
-    enable_argocd         = false
+    enable_argocd = false
   }
 }
 # Addons Git
@@ -109,14 +105,8 @@ variable "gitops_workload_path" {
   default     = "apps"
 }
 
-variable "enable_gitops_auto_addons" {
+variable "enable_gitops_auto_bootstrap" {
   description = "Automatically deploy addons"
   type        = bool
-  default     = false
-}
-
-variable "enable_gitops_auto_workloads" {
-  description = "Automatically deploy addons"
-  type        = bool
-  default     = false
+  default     = true
 }

@@ -10,7 +10,8 @@ locals {
   git_private_ssh_key = var.ssh_key_path # Update with the git ssh key to be used by ArgoCD
 
   gitops_addons_org      = var.gitops_addons_org
-  gitops_addons_url      = "${var.gitops_addons_org}/${var.gitops_addons_repo}"
+  gitops_addons_repo     = var.gitops_addons_repo
+  gitops_addons_url      = "${local.gitops_addons_org}/${local.gitops_addons_repo}"
   gitops_addons_basepath = var.gitops_addons_basepath
   gitops_addons_path     = var.gitops_addons_path
   gitops_addons_revision = var.gitops_addons_revision
@@ -113,8 +114,8 @@ module "akuity" {
 
   cluster = {
     cluster_name = module.eks.cluster_name
-    metadata = local.addons_metadata
-    addons   = local.addons
+    metadata     = local.addons_metadata
+    addons       = local.addons
   }
   repo_credential_secrets = {
     repo-my-private-ssh-repo = {
@@ -122,5 +123,5 @@ module "akuity" {
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
   }
-  depends_on = [ module.eks_blueprints_addons ]
+  depends_on = [module.eks_blueprints_addons]
 }
