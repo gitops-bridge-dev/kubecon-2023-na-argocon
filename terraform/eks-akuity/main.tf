@@ -153,12 +153,12 @@ module "akuity" {
     metadata     = local.addons_metadata
     addons       = local.addons
   }
-  repo_credential_secrets = {
+  repo_credential_secrets = var.enable_git_ssh ? {
     repo-my-private-ssh-repo = {
       url           = local.gitops_addons_url
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
-  }
+  }: {}
   depends_on = [module.eks_blueprints_addons]
 }
 

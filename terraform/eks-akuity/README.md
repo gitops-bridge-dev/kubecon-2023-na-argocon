@@ -60,7 +60,7 @@ The output looks like the following:
   "addons_repo_basepath": "gitops/",
   "addons_repo_path": "bootstrap/control-plane/addons",
   "addons_repo_revision": "update-ek-examples-10-30",
-  "addons_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon",
+  "addons_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon",
   "aws_account_id": "0123456789",
   "aws_cloudwatch_metrics_iam_role_arn": "arn:aws:iam::0123456789:role/aws-cloudwatch-metrics-20231031031132065600000004",
   "aws_cloudwatch_metrics_namespace": "amazon-cloudwatch",
@@ -89,7 +89,7 @@ The output looks like the following:
   "workload_repo_basepath": "gitops/",
   "workload_repo_path": "apps",
   "workload_repo_revision": "update-ek-examples-10-30",
-  "workload_repo_url": "git@github.com:csantanapr/kubecon-2023-na-argocon"
+  "workload_repo_url": "https://github.com/csantanapr/kubecon-2023-na-argocon"
 }
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
@@ -129,17 +129,17 @@ watch argocd app list
 The output looks like this
 ```
 NAME                                                         CLUSTER            NAMESPACE          PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                               PATH                                        TARGET
-argocd/addon-ex-eks-akuity-dev-aws-cloudwatch-metrics        ex-eks-akuity-dev  amazon-cloudwatch  default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-aws-ebs-csi-resources         ex-eks-akuity-dev                     default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon  gitops/charts/addons/aws-ebs-csi/resources  main
-argocd/addon-ex-eks-akuity-dev-aws-for-fluent-bit            ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-aws-load-balancer-controller  ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-cert-manager                  ex-eks-akuity-dev  cert-manager       default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-external-secrets              ex-eks-akuity-dev  external-secrets   default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-ingress-nginx                 ex-eks-akuity-dev  ingress-nginx      default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-karpenter                     ex-eks-akuity-dev  karpenter          default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-kyverno                       ex-eks-akuity-dev  kyverno            default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/addon-ex-eks-akuity-dev-metrics-server                ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon                                              main
-argocd/cluster-addons                                        in-cluster         argocd             default  Synced  Healthy  Auto        <none>      git@github.com:gitops-bridge-dev/kubecon-2023-na-argocon  gitops/bootstrap/control-plane/addons       main
+argocd/addon-ex-eks-akuity-dev-aws-cloudwatch-metrics        ex-eks-akuity-dev  amazon-cloudwatch  default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-aws-ebs-csi-resources         ex-eks-akuity-dev                     default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon  gitops/charts/addons/aws-ebs-csi/resources  main
+argocd/addon-ex-eks-akuity-dev-aws-for-fluent-bit            ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-aws-load-balancer-controller  ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-cert-manager                  ex-eks-akuity-dev  cert-manager       default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-external-secrets              ex-eks-akuity-dev  external-secrets   default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-ingress-nginx                 ex-eks-akuity-dev  ingress-nginx      default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-karpenter                     ex-eks-akuity-dev  karpenter          default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-kyverno                       ex-eks-akuity-dev  kyverno            default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/addon-ex-eks-akuity-dev-metrics-server                ex-eks-akuity-dev  kube-system        default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon                                              main
+argocd/cluster-addons                                        in-cluster         argocd             default  Synced  Healthy  Auto        <none>      https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon  gitops/bootstrap/control-plane/addons       main
 ```
 
 
@@ -163,7 +163,7 @@ Project:            default
 Server:             ex-eks-akuity-dev
 Namespace:          guestbook
 URL:                https://aggowmg7gr5hbl23.cd.akuity.cloud/applications/guestbook
-Repo:               git@github.com:csantanapr/kubecon-2023-na-argocon
+Repo:               https://github.com/csantanapr/kubecon-2023-na-argocon
 Target:             update-eks-10-31
 Path:               gitops/apps/guestbook
 SyncWindow:         Sync Allowed
@@ -280,11 +280,11 @@ To tear down all the resources and the EKS cluster, run the following command:
 To modify the `values.yaml` file for addons or the workload manifest files (.ie yaml), you'll need to fork this repository: [gitops-bridge-dev/kubecon-2023-na-argocon](https://github.com/gitops-bridge-dev/kubecon-2023-na-argocon).
 After forking, update the following environment variables to point to you fork, replacing the default values.
 ```shell
-export TF_VAR_gitops_addons_org=git@github.com:<org or user>
+export TF_VAR_gitops_addons_org=https://github.com/<org or user>
 export TF_VAR_gitops_addons_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_addons_revision=main
 
-export TF_VAR_gitops_workload_org=git@github.com:<org or user>
+export TF_VAR_gitops_workload_org=https://github.com/<org or user>
 export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_workload_revision=main
 ```
