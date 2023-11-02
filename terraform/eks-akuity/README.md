@@ -294,7 +294,6 @@ export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_workload_revision=main
 ```
 
-
 ### Manually deploy Bootstrap apps
 
 Only applicable if you don't deploy the bootstrap by setting the following variable to false (default true)
@@ -302,13 +301,13 @@ Only applicable if you don't deploy the bootstrap by setting the following varia
 export TF_VAR_enable_gitops_auto_bootstrap=false
 ```
 
-## Deploy the Addons
+#### Deploy the Addons
 Bootstrap the addons using ArgoCD:
 ```shell
 argocd appset create --upsert ../../gitops/bootstrap/control-plane/exclude/addons-akuity.yaml
 ```
 
-## Deploy the Workloads
+#### Deploy the Workloads
 Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
 ```shell
 argocd appset create --upsert ../../gitops/bootstrap/workloads/exclude/workloads-akuity.yaml

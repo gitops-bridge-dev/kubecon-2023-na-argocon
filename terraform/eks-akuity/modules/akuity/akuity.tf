@@ -31,7 +31,7 @@ resource "akp_instance" "argocd" {
     "accounts.admin" = "login"
   }
   argocd_secret = {
-    "admin.password" = "${bcrypt(var.argocd_admin_password)}"
+    "admin.password" = bcrypt(var.argocd_admin_password)
   }
   repo_credential_secrets = var.repo_credential_secrets
   lifecycle {
@@ -48,18 +48,18 @@ data "aws_eks_cluster" "this" {
   name = var.cluster.cluster_name
 }
 locals {
-  environment = try(var.cluster.environment,"dev")
+  environment = try(var.cluster.environment, "dev")
 }
-resource "akp_cluster" "gitops-bridge" {
+resource "akp_cluster" "gitops_bridge" {
   instance_id = akp_instance.argocd.id
   kube_config = {
     host                   = data.aws_eks_cluster.this.endpoint
     token                  = data.aws_eks_cluster_auth.this.token
-    cluster_ca_certificate = "${base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)}"
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
   }
-  name      = "${var.cluster.cluster_name}-${local.environment}"
-  namespace = "akuity"
-  labels    = merge({ environment = local.environment }, var.cluster.addons)
+  name        = "${var.cluster.cluster_name}-${local.environment}"
+  namespace   = "akuity"
+  labels      = merge({ environment = local.environment }, var.cluster.addons)
   annotations = var.cluster.metadata
   spec = {
     description = "${var.cluster.cluster_name}-${local.environment} cluster"

@@ -12,9 +12,9 @@ variable "argocd_admin_password" {
 }
 
 variable "enable_git_ssh" {
-  description = "use git ssh"
-  type = bool
-  default = false
+  description = "Use git ssh to access all git repos using format git@github.com:<org>"
+  type        = bool
+  default     = false
 }
 variable "ssh_key_path" {
   description = "SSH key path for git access"

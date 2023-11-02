@@ -159,7 +159,7 @@ module "akuity" {
       url           = local.gitops_addons_url
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
-  }: {}
+  } : {}
   depends_on = [module.eks_blueprints_addons]
 }
 
@@ -169,14 +169,16 @@ module "akuity" {
 module "argocd" {
   source = "./modules/argocd-bootstrap"
 
+  count = var.enable_gitops_auto_bootstrap ? 1 : 0
+
   addons = {
-    repo_url = local.gitops_addons_url
-    path = "${local.gitops_addons_basepath}${local.gitops_addons_path}"
+    repo_url        = local.gitops_addons_url
+    path            = "${local.gitops_addons_basepath}${local.gitops_addons_path}"
     target_revision = local.gitops_addons_revision
   }
   workloads = {
-    repo_url = local.gitops_workload_url
-    path = "${local.gitops_workload_basepath}bootstrap/workloads"
+    repo_url        = local.gitops_workload_url
+    path            = "${local.gitops_workload_basepath}bootstrap/workloads"
     target_revision = local.gitops_addons_revision
   }
   depends_on = [module.akuity]

@@ -9,7 +9,5 @@ variable "cluster" {
 variable "repo_credential_secrets" {
   description = "repo_credential_secrets"
   type        = any
-  default =  {}
+  default     = {}
 }
-
-
