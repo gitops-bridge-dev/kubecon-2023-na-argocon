@@ -36,8 +36,6 @@ See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) f
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
-terraform apply -target="module.vpc" -auto-approve
-terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
@@ -119,12 +117,6 @@ The output looks like the following:
 }
 ```
 
-## Deploy the Addons
-Bootstrap the addons using ArgoCD:
-```shell
-kubectl apply -f ../../gitops/bootstrap/control-plane/exclude/addons.yaml
-```
-
 ### Monitor GitOps Progress for Addons
 Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
 ```shell
@@ -141,12 +133,6 @@ kubectl get deployment -A
 Access ArgoCD's UI, run the command from the output:
 ```shell
 terraform output -raw access_argocd
-```
-
-## Deploy the Workloads
-Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
-```shell
-kubectl apply -f ../../gitops/bootstrap/workloads/exclude/workloads.yaml
 ```
 
 ### Monitor GitOps Progress for Workloads
@@ -218,4 +204,23 @@ export TF_VAR_gitops_addons_revision=main
 export TF_VAR_gitops_workload_org=git@github.com:<org or user>
 export TF_VAR_gitops_workload_repo=kubecon-2023-na-argocon
 export TF_VAR_gitops_workload_revision=main
+```
+
+### Manually deploy Bootstrap apps
+
+Only applicable if you don't deploy the bootstrap by setting the following variable to false (default true)
+```shell
+export TF_VAR_enable_gitops_auto_bootstrap=false
+```
+
+#### Deploy the Addons
+Bootstrap the addons using ArgoCD:
+```shell
+kubectl apply -f ../../gitops/bootstrap/control-plane/exclude/addons.yaml
+```
+
+#### Deploy the Workloads
+Deploy a sample application located in [../../gitops/apps/guestbook](../../gitops/apps/guestbook) using ArgoCD:
+```shell
+kubectl apply -f ../../gitops/bootstrap/workloads/exclude/workloads.yaml
 ```

@@ -75,4 +75,6 @@ module "ebs_csi_driver_irsa" {
   }
 
   tags = local.tags
+
+  depends_on = [module.vpc]
 }

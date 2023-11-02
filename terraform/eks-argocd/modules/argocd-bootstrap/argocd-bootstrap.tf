@@ -66,5 +66,7 @@ resource "argocd_application" "bootstrap_workloads" {
       }
     }
   }
-  depends_on = [argocd_application.bootstrap_addons]
+  depends_on = [ argocd_application.bootstrap_addons ]
 }
+
+
