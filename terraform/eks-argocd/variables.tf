@@ -39,15 +39,47 @@ variable "addons" {
     enable_external_secrets             = true
     enable_aws_load_balancer_controller = true
     enable_aws_for_fluentbit            = true
-    enable_karpenter                    = true
+    enable_karpenter                    = false
     enable_aws_ingress_nginx            = true # inginx configured with AWS NLB
     # oss
     enable_metrics_server = true
     enable_kyverno        = true
     # Enable if want argo manage argo from gitops
     enable_argocd = false
+
+    enable_aws_efs_csi_driver                    = false
+    enable_aws_fsx_csi_driver                    = false
+    enable_aws_privateca_issuer                  = false
+    enable_cluster_autoscaler                    = false
+    enable_external_dns                          = false
+    enable_fargate_fluentbit                     = false
+    enable_aws_node_termination_handler          = false
+    enable_velero                                = false
+    enable_aws_gateway_api_controller            = false
+    enable_aws_secrets_store_csi_driver_provider = false
+    enable_ack_apigatewayv2                      = false
+    enable_ack_dynamodb                          = false
+    enable_ack_s3                                = false
+    enable_ack_rds                               = false
+    enable_ack_prometheusservice                 = false
+    enable_ack_emrcontainers                     = false
+    enable_ack_sfn                               = false
+    enable_ack_eventbridge                       = false
+
+    enable_argo_rollouts                   = false
+    enable_argo_events                     = false
+    enable_argo_workflows                  = false
+    enable_cluster_proportional_autoscaler = false
+    enable_gatekeeper                      = false
+    enable_gpu_operator                    = false
+    enable_ingress_nginx                   = false
+    enable_kube_prometheus_stack           = false
+    enable_prometheus_adapter              = false
+    enable_secrets_store_csi_driver        = false
+    enable_vpa                             = false
   }
 }
+
 # Addons Git
 variable "gitops_addons_org" {
   description = "Git repository org/user contains for addons"

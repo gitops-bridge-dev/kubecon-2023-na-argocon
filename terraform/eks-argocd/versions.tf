@@ -35,6 +35,7 @@ terraform {
   #   key    = "e2e/ipv4-prefix-delegation/terraform.tfstate"
   # }
 }
+
 provider "argocd" {
   port_forward_with_namespace = "argocd"
   username                    = "admin"
@@ -52,7 +53,16 @@ provider "argocd" {
   }
 }
 
-
+data "aws_caller_identity" "current" {}
+data "aws_availability_zones" "available" {}
+locals {
+  name   = "ex-${replace(basename(path.cwd), "_", "-")}"
+  region = var.region
+  tags = {
+    Blueprint  = local.name
+    GithubRepo = "github.com/gitops-bridge-dev/gitops-bridge"
+  }
+}
 provider "aws" {
   region = local.region
 }
