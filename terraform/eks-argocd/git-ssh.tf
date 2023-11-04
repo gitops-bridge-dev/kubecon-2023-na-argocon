@@ -1,4 +1,6 @@
-
+locals {
+  git_private_ssh_key = var.ssh_key_path # Update with the git ssh key to be used by ArgoCD
+}
 ################################################################################
 # GitOps Bridge: Private ssh keys for git
 ################################################################################
@@ -12,12 +14,12 @@ resource "kubernetes_secret" "git_secrets" {
   for_each = var.enable_git_ssh ? {
     git-addons = {
       type          = "git"
-      url           = local.gitops_addons_org
+      url           = var.gitops_addons_org
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
     git-workloads = {
       type          = "git"
-      url           = local.gitops_workload_org
+      url           = var.gitops_workload_org
       sshPrivateKey = file(pathexpand(local.git_private_ssh_key))
     }
   } : {}
